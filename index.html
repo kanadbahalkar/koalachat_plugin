@@ -1,47 +1,36 @@
-<!DOCTYPE html>
-<html >
-<head>
-  <meta charset="UTF-8">
-  <title>KoalaChat Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
-</head>
+<html ng-app="myApp">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/chatStyle.css">
+    </head>
+    <body>
+        <img class="koala-eyes" src="assets/img/koala-eyes.svg" alt="KoalaChat FTW"/>
+        
+        <div class="fabs">
+            <div class="chat white">
+                <div class="chat_login">
+                    <input id="email" name="chat_message" placeholder="Your Cool Email" class="chat_field chat_message"></input>
+                    <input id="password" type="password" name="chat_message" placeholder="Your Strong Password" class="chat_field chat_message"></input>
+                    <a href="#" id="email_login" class="button login">Login</a>
+                    <a href="#" id="reg_options" class="button register">Register</a>
+                </div>
 
-<body>
-  <div class="fabs">
-    <div class="chat white">
-      <div class="chat_header">
-        <span id="chat_head">KoalaBot</span>
-      </div>
-      <div class="chat_login">
-          <a id="chat_send_email" class="fab"><i class="zmdi zmdi-email"></i></a>
-          <input id="chat_log_email" placeholder="Email"></input>
-      <div class="chat_login_alert"></div>
-      </div>
-      <div id="chat_converse" class="chat_converse">
-        <span class="chat_msg_item chat_msg_item_admin">
-          <div class="chat_avatar">
-            <i class="zmdi zmdi-headset-mic"></i>
-          </div>
-          Hi! How may I be of service
-        </span>
-        <span class="chat_msg_item chat_msg_item_user">
-          <div class="chat_avatar">
-            <i class="zmdi zmdi-account"></i>
-          </div>Ermm...
-        </span>
-      </div>
-      <div class="fab_field">
-        <a id="fab_listen" class="fab"><i class="zmdi zmdi-mic-outline"></i></a>
-        <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
-        <textarea id="chatSend" name="chat_message" placeholder="Write a message" class="chat_field chat_message"></textarea>
-      </div>
-    </div>
-    <a id="prime" class="fab"><i class="prime zmdi zmdi-plus"></i></a>
-  </div>
-  
-  <script src="js/socket.io.js"></script>
-  <script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
-  <script id="koala-index" u="5830c539d561c1dcdb6598a7" src="js/index.js"></script>
-</body>
+                <div id="chat_converse" class="chat_converse">
+                    <span class="chat_msg_item chat_msg_item_admin">Hi! How may I be of service</span>
+                </div>
+                
+                <div class="fab_field">
+                    <a id="fab_listen" class="fab"><i class="zmdi zmdi-mic-outline"></i></a>
+                    <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
+                    <textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea>
+                </div>
+            </div>
+            <a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a>
+        </div>
+        
+        <script src="js/socket.io.js"></script>
+        <script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+        <script id="koala-index" u="5830c539d561c1dcdb6598a7" src="js/index.js"></script>
+        
+    </body>
 </html>

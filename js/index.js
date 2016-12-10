@@ -1,94 +1,50 @@
+//TODO
+//Add hardcoded chat bubbles as walkthru (refer to copy in design) 
+//Add Avatar on the first chat bubble 
+//Smoother animations (left to right or vice versa)
+//Clean up CSS and JS files
+//Chathead cleaner animation
+//Hookup with Authentication APIs
+
 var oid = document.getElementById("koala-index").getAttribute("u");
 
 toggleFab();
-
-//Persist browser refresh with localstorage token
-var vid = Math.random().toString(36).substring(3,16) + +new Date;
-localStorage.setItem('vid', vid);
-localStorage.setItem('oid', oid);
-
-//Replace this with a "New Connection" API endpoint 
-var socket = io.connect('http://localhost:4731/');
-
-//Save temp session ID right after connection
-var visitor = {
-  'vid' : localStorage.getItem('vid'),
-  'oid' : localStorage.getItem('oid')
-}
-
-//Hookup this Visitor with the correct Owner
-socket.emit('subscribe to owner', visitor);
-
-socket.on('message from owner', function(reply) {
-    adminSend(reply);
-});
-
-//define chat color
-if (typeof(Storage) !== "undefined") {
-  if (localStorage.getItem('fab-color') === null) {
-    localStorage.setItem("fab-color", "white");
-  }
-  // $('.fabs').addClass(localStorage.getItem("fab-color"));
-} else {
-  $('.fabs').addClass("white");
-}
 
 //Fab click
 $('#prime').click(function() {
   toggleFab();
 });
 
-//Speak admin msg
-// function botSpeak(text) {
-//   if ('speechSynthesis' in window) {
-//     var msg = new SpeechSynthesisUtterance(text);
-//     window.speechSynthesis.speak(msg);
-//   }
-// }
-
 //Toggle chat and links
 function toggleFab() {
-  $('.prime').toggleClass('zmdi-plus');
   $('.prime').toggleClass('zmdi-close');
+  $('.prime').parent().toggleClass('chathead-open');
   $('.prime').toggleClass('is-active');
   $('#prime').toggleClass('is-float');
   $('.chat').toggleClass('is-visible');
   $('.fab').toggleClass('is-visible');
 }
 
-function readBody(xhr) {
-    var data;
-    if (!xhr.responseType || xhr.responseType === "text") {
-        data = xhr.responseText;
-    } else if (xhr.responseType === "document") {
-        data = xhr.responseXML;
-    } else {
-        data = xhr.response;
-    }
-    return data;
-}
-
-function socketMessage(message, oid, vid){
-  socket.emit('message from visitor', { message : message, oid : oid, vid : vid });
-}
+//Increase Textarea on scroll height change
+$('#chatSend').on('keyup', function () {
+    $(this).css('height', this.scrollHeight);
+});
 
 //User msg
-function userSend(text, oid, vid) {
-  socketMessage(text, oid, vid);
-  var img = '<i class="zmdi zmdi-account"></i>';
-  $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_user"><div class="chat_avatar">' + img + '</div>' + text + '</div>');
+function userSend(text) {
+  $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_user">' + text + '</div>');
   $('#chatSend').val('');
-  if ($('.chat_converse').height() >= 256) {
+  if ($('.chat_converse').height() >= 264) {
     $('.chat_converse').addClass('is-max');
   }
   $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
+  $('#chatSend').css('height', 40);
 }
 
 //Admin msg
 function adminSend(text) {
-  $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_admin"><div class="chat_avatar"><i class="zmdi zmdi-headset-mic"></i></div>' + text + '</div>');
-  // botSpeak(text);
-  if ($('.chat_converse').height() >= 256) {
+  $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_admin">' + text + '</div>');
+  if ($('.chat_converse').height() >= 264) {
     $('.chat_converse').addClass('is-max');
   }
   $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
@@ -96,13 +52,13 @@ function adminSend(text) {
 
 //Send input using enter and send key
 $('#chatSend').bind("enterChat", function(e) {
-  userSend($('#chatSend').val(), oid, vid);
-  // adminSend('How may I help you.');
+  userSend($('#chatSend').val());
 });
+
 $('#fab_send').bind("enterChat", function(e) {
-  userSend($('#chatSend').val(), oid, vid);
-  adminSend('How may I help you.');
+  userSend($('#chatSend').val());
 });
+
 $('#chatSend').keypress(function(event) {
   if (event.keyCode === 13) {
     event.preventDefault();
@@ -125,13 +81,6 @@ $('#fab_listen').click(function() {
     userSend(event.results[0][0].transcript, oid, vid);
   }
   recognition.start();
-});
-
-// Color options
-$(".chat_color").click(function(e) {
-  $('.fabs').removeClass(localStorage.getItem("fab-color"));
-  $('.fabs').addClass($(this).attr('color'));
-  localStorage.setItem("fab-color", $(this).attr('color'));
 });
 
 $('.chat_option').click(function(e) {
@@ -207,72 +156,116 @@ function eraseCookie(name) {
 }
 
 //User login
-function logUser() {
+function loginUser() {
   hideChat(true);
-  $('#chat_send_email').click(function(e) {
-    var email = $('#chat_log_email').val();
-    if (jQuery.trim(email) !== '' && validateEmail(email)) {
-      $('.chat_login_alert').html('');
-      loadBeat(true);
-      createCookie('fab_chat_email', email, 100);
-      if (checkEmail(email)) {
-        //email exist and get and set username in session
+  $('#email_login').click(function(e) {
+    if($('#website').length > 0){
+      $('.register_tip_social').remove();
+      $('.chat_login_alert').remove();
+      $('#gmail_login').remove();
+      $('#fb_login').remove();  
+      $('#website').remove();
+    }
+    else{
+      var website = $('#website').val();
+      var email = $('#email').val();
+      var password = $('#password').val();
+      if (jQuery.trim(email) !== '' && validateEmail(email) && validatePassword(password)) {
+        loadBeat(true);
+        createCookie('saved_email', email, 100);
+        loadBeat(false);
+        $('#website').val('');
+        $('#email').val('');
+        $('#password').val('');
         hideChat(false);
-      } else {
-        setTimeout(createUsername, 1000);
+      } 
+      else if(!validateEmail(email) && !validatePassword(password)){
+        $('.chat_login_alert').remove();
+        var validationText = 'Hmmmm sneaky sneaky! 😉 Type in your email and password to get in... ';
+        $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
       }
-    } else {
-      $('.chat_login_alert').html('Invalid email.');
+      else if(!validateEmail(email)){
+        $('.chat_login_alert').remove();
+        var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
+        $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
+      } 
+      else if(!validatePassword(password)){
+        $('.chat_login_alert').remove();
+        var validationText = 'Derp! Seems like your password is a little too short. Let’s make it longer shall we… 😊';
+        $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
+      }
     }
   });
 }
 
-function createUsername() {
-  loadBeat(false);
-  $('#chat_log_email').val('');
-  $('#chat_send_email').children('i').removeClass('zmdi-email').addClass('zmdi-account');
-  $('#chat_log_email').attr('placeholder', 'Username');
-  $('#chat_send_email').attr('id', 'chat_send_username');
-  $('#chat_log_email').attr('id', 'chat_log_username');
-  $('#chat_send_username').click(function(e) {
-    var username = $('#chat_log_username').val();
-    if (jQuery.trim(username) !== '') {
+//Show Registration options
+$('#reg_options').click(function (e) {
+  if($('#website').length > 0){
+    var website = $('#website').val();
+    var email = $('#email').val();
+    var password = $('#password').val();
+    if (jQuery.trim(email) !== '' && validateEmail(email) && validatePassword(password) && validateWebsite(website)) {
       loadBeat(true);
-      if (checkUsername(username)) {
-        //username is taken
-        $('.chat_login_alert').html('Username is taken.');
-      } else {
-        //save username in DB and session
-        createCookie('fab_chat_username', username, 100);
-        hideChat(false);
-      }
-    } else {
-      $('.chat_login_alert').html('Please provide username.');
+      createCookie('saved_email', email, 100);
+      createCookie('saved_website', email, 100);
+      loadBeat(false);
+      $('#website').val('');
+      $('#email').val('');
+      $('#password').val('');
+      hideChat(false);
+    } 
+    else if(!validateEmail(email)){
+      $('.chat_login_alert').remove();
+      var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
+      $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
+    } 
+    else if(!validatePassword(password)){
+      $('.chat_login_alert').remove();
+      var validationText = 'Derp! Seems like your password is a little too short. Let’s make it longer shall we… 😊';
+      $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
     }
-  });
-}
+  }
+  else{
+    $('.chat_login_alert').remove();
+    $('.register_tip_social').remove();
+    $('#gmail_login').remove();
+    $('#fb_login').remove();
+    $('#website').remove();
+    $('.chat_login').prepend('<input id="website" name="website" placeholder="Your Website Link" class="chat_field chat_message"></input>');
+    $('.chat_login').prepend('<a href="#" id="fb_login" class="button fb_login">Facebook</a>');
+    $('.chat_login').prepend('<a href="#" id="gmail_login" class="button gmail_login">Gmail</a>');
+    $('.chat_login').prepend('<p class="register_tip_social">You could also register easily with your social media...</p>');
+  }
+});
+
+//Login using enter and send key
+$('#email').keypress(function (e) {
+  var key = e.which;
+  if(key == 13)
+    {
+      $('#email_login').click();
+      return false;  
+    }
+});
+
+$('#password').keypress(function (e) {
+  var key = e.which;
+  if(key == 13)
+  {
+    $('#email_login').click();
+    return false;  
+  }
+});
 
 function hideChat(hide) {
   if (hide) {
     $('.chat_converse').css('display', 'none');
     $('.fab_field').css('display', 'none');
   } else {
-    $('#chat_head').html(readCookie('fab_chat_username'));
-    // Help
     $('.chat_login').css('display', 'none');
     $('.chat_converse').css('display', 'block');
     $('.fab_field').css('display', 'inline-block');
   }
-}
-
-function checkEmail(email) {
-  //check if email exist in DB
-  return false;
-}
-
-function checkUsername(username) {
-  //check if username exist in DB
-  return false;
 }
 
 function validateEmail(email) {
@@ -284,8 +277,25 @@ function validateEmail(email) {
   }
 }
 
-if (readCookie('fab_chat_username') === null || readCookie('fab_chat_email') === null) {
-  logUser();
+function validateWebsite(website) {
+  var websiteReg = /^([\w-\.]+\.)+[\w-]{2,4})?$/;
+  if (!websiteReg.test(website)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function validatePassword(password) {
+  if (password.length < 6) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+if (readCookie('saved_email') === null && readCookie('saved_website') === null) {
+  loginUser();
 } else {
   hideChat(false);
 }
