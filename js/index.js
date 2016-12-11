@@ -157,6 +157,14 @@ function eraseCookie(name) {
 
 //User login
 function loginUser() {
+  //THIS IS BAD CODING PRACTISE -_-
+  $('.register_tip_social').remove();
+  $('#gmail_login').remove();
+  $('#fb_login').remove();
+  $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
+  $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
+  $('.chat_login').prepend('<p class="register_tip_social">You could also login easily with your social media...</p>');
+  
   hideChat(true);
   $('#email_login').click(function(e) {
     if($('#website').length > 0){
@@ -165,16 +173,27 @@ function loginUser() {
       $('#gmail_login').remove();
       $('#fb_login').remove();  
       $('#website').remove();
+      $('.register_tip_social').remove();
+      $('#gmail_login').remove();
+      $('#fb_login').remove();
+      $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
+      $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
+      $('.chat_login').prepend('<p class="register_tip_social">You could also login easily with your social media...</p>');
     }
     else{
-      var website = $('#website').val();
+      $('.register_tip_social').remove();
+      $('#gmail_login').remove();
+      $('#fb_login').remove();
+      $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
+      $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
+      $('.chat_login').prepend('<p class="register_tip_social">You could also login easily with your social media...</p>');
+      
       var email = $('#email').val();
       var password = $('#password').val();
       if (jQuery.trim(email) !== '' && validateEmail(email) && validatePassword(password)) {
         loadBeat(true);
         createCookie('saved_email', email, 100);
         loadBeat(false);
-        $('#website').val('');
         $('#email').val('');
         $('#password').val('');
         hideChat(false);
@@ -232,8 +251,8 @@ $('#reg_options').click(function (e) {
     $('#fb_login').remove();
     $('#website').remove();
     $('.chat_login').prepend('<input id="website" name="website" placeholder="Your Website Link" class="chat_field chat_message"></input>');
-    $('.chat_login').prepend('<a href="#" id="fb_login" class="button fb_login">Facebook</a>');
-    $('.chat_login').prepend('<a href="#" id="gmail_login" class="button gmail_login">Gmail</a>');
+    $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
+    $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
     $('.chat_login').prepend('<p class="register_tip_social">You could also register easily with your social media...</p>');
   }
 });
