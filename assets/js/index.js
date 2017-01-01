@@ -20,11 +20,14 @@ var leLogic = function() {
 
   toggleFab();
 
-  $.getScript("assets/js/socket.io.js", function(){
+  $.getScript("https://s3.amazonaws.com/koalachat/socket.io.js", function(){
     console.log("Socket.io Script loaded");
     //Write all socket io code here
     
   });
+
+  //Load the visuals
+  $('body').append('<div class="fabs"><div class="chat white"><div class="chat_login"><input id="email" name="chat_message" placeholder="Your Cool Email" class="chat_field chat_message"></input><input id="password" type="password" name="chat_message" placeholder="Your Strong Password" class="chat_field chat_message"></input><a href="#" id="email_login" class="button login">Login</a><a href="#" id="reg_options" class="button register">Register</a></div><div id="chat_converse" class="chat_converse"><span class="chat_msg_item chat_msg_item_admin">Hi! How may I be of service</span></div><div class="fab_field"><a id="fab_listen" class="fab"><i class="zmdi zmdi-mic-outline"></i></a><a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a><textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea></div></div><a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a></div>');
 
   //Fab click
   $('#prime').click(function() {
@@ -336,4 +339,4 @@ var leLogic = function() {
   }
 };
 
-loadScript("assets/js/jquery.min.js", leLogic);
+loadScript("https://s3.amazonaws.com/koalachat/jquery.min.js", leLogic);
