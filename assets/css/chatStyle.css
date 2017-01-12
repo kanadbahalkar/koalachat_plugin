@@ -32,12 +32,12 @@ p.pointer-text{
 }
 
 .chathead-closed {
-  background-image: url('../images/chathead-closed.svg') !important;
+  background-image: url('https://s3.amazonaws.com/koalachat/chathead-closed.svg') !important;
   border-radius: 30%;
 }
 
 .chathead-open {
-  background-image: url('../images/chathead-open.svg') !important;
+  background-image: url('https://s3.amazonaws.com/koalachat/chathead-open.svg') !important;
   border-radius: 30%;
 }
 

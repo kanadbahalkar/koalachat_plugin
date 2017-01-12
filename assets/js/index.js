@@ -12,22 +12,23 @@ function loadScript(url, callback)
   script.onload = callback;
 
   // Fire the loading
+  head.appendChild('https://s3.amazonaws.com/koalachat/chatStyle.css');
+  head.appendChild(script);
   head.appendChild(script);
 }
 
 var leLogic = function() {
-  var oid = document.getElementById("koala-index").getAttribute("u");
 
+  $('<div class="fabs"><div class="chat white"><div class="fab_field"><a id="fab_listen" class="fab"><i class="zmdi zmdi-mic-outline"></i></a><a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a><textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea></div></div><a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a></div>').appendTo('body');
+
+  var oid = document.getElementById("koala-index").getAttribute("u");
+  
   toggleFab();
 
   $.getScript("https://s3.amazonaws.com/koalachat/socket.io.js", function(){
     console.log("Socket.io Script loaded");
     //Write all socket io code here
-    
   });
-
-  //Load the visuals
-  $('body').append('<div class="fabs"><div class="chat white"><div class="chat_login"><input id="email" name="chat_message" placeholder="Your Cool Email" class="chat_field chat_message"></input><input id="password" type="password" name="chat_message" placeholder="Your Strong Password" class="chat_field chat_message"></input><a href="#" id="email_login" class="button login">Login</a><a href="#" id="reg_options" class="button register">Register</a></div><div id="chat_converse" class="chat_converse"><span class="chat_msg_item chat_msg_item_admin">Hi! How may I be of service</span></div><div class="fab_field"><a id="fab_listen" class="fab"><i class="zmdi zmdi-mic-outline"></i></a><a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a><textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea></div></div><a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a></div>');
 
   //Fab click
   $('#prime').click(function() {
@@ -180,33 +181,13 @@ var leLogic = function() {
     $('.register_tip_social').remove();
     $('#gmail_login').remove();
     $('#fb_login').remove();
-    $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
-    $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
-    $('.chat_login').prepend('<p class="register_tip_social">You could also login easily with your social media...</p>');
     
     hideChat(true);
     $('#email_login').click(function(e) {
       if($('#website').length > 0){
-        $('.register_tip_social').remove();
         $('.chat_login_alert').remove();
-        $('#gmail_login').remove();
-        $('#fb_login').remove();  
-        $('#website').remove();
-        $('.register_tip_social').remove();
-        $('#gmail_login').remove();
-        $('#fb_login').remove();
-        $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
-        $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
-        $('.chat_login').prepend('<p class="register_tip_social">You could also login easily with your social media...</p>');
       }
       else{
-        $('.register_tip_social').remove();
-        $('#gmail_login').remove();
-        $('#fb_login').remove();
-        $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
-        $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
-        $('.chat_login').prepend('<p class="register_tip_social">You could also login easily with your social media...</p>');
-        
         var email = $('#email').val();
         var password = $('#password').val();
         if (jQuery.trim(email) !== '' && validateEmail(email) && validatePassword(password)) {
@@ -236,46 +217,6 @@ var leLogic = function() {
     });
   }
 
-  //Show Registration options
-  $('#reg_options').click(function (e) {
-    if($('#website').length > 0){
-      var website = $('#website').val();
-      var email = $('#email').val();
-      var password = $('#password').val();
-      if (jQuery.trim(email) !== '' && validateEmail(email) && validatePassword(password) && validateWebsite(website)) {
-        loadBeat(true);
-        createCookie('saved_email', email, 100);
-        createCookie('saved_website', email, 100);
-        loadBeat(false);
-        $('#website').val('');
-        $('#email').val('');
-        $('#password').val('');
-        hideChat(false);
-      } 
-      else if(!validateEmail(email)){
-        $('.chat_login_alert').remove();
-        var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
-        $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
-      } 
-      else if(!validatePassword(password)){
-        $('.chat_login_alert').remove();
-        var validationText = 'Derp! Seems like your password is a little too short. Let’s make it longer shall we… 😊';
-        $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
-      }
-    }
-    else{
-      $('.chat_login_alert').remove();
-      $('.register_tip_social').remove();
-      $('#gmail_login').remove();
-      $('#fb_login').remove();
-      $('#website').remove();
-      $('.chat_login').prepend('<input id="website" name="website" placeholder="Your Website Link" class="chat_field chat_message"></input>');
-      $('.chat_login').prepend('<a href="http://localhost:4731/auth/facebook" id="fb_login" class="button fb_login">Facebook</a>');
-      $('.chat_login').prepend('<a href="http://localhost:4731/auth/google" id="gmail_login" class="button gmail_login">Gmail</a>');
-      $('.chat_login').prepend('<p class="register_tip_social">You could also register easily with your social media...</p>');
-    }
-  });
-
   //Login using enter and send key
   $('#email').keypress(function (e) {
     var key = e.which;
@@ -298,7 +239,6 @@ var leLogic = function() {
   function hideChat(hide) {
     if (hide) {
       $('.chat_converse').css('display', 'none');
-      $('.fab_field').css('display', 'none');
     } else {
       $('.chat_login').css('display', 'none');
       $('.chat_converse').css('display', 'block');
@@ -340,3 +280,4 @@ var leLogic = function() {
 };
 
 loadScript("https://s3.amazonaws.com/koalachat/jquery.min.js", leLogic);
+
