@@ -1,7 +1,5 @@
-@import url(http://zavoloklom.github.io/material-design-iconic-font/css/docs.md-iconic-font.min.css);
-
 body {
-    background-color: #FAFAFA;
+    background-color: rgba(0,0,0,0);;
     font-family: 'Hind', sans-serif;
     font-weight: 400;
     font-size: 14px;
@@ -39,6 +37,20 @@ p.pointer-text{
 .chathead-open {
   background-image: url('https://s3.amazonaws.com/koalachat/chathead-open.svg') !important;
   border-radius: 30%;
+}
+
+.zmdi-close {
+  background-image: url('https://s3.amazonaws.com/koalachat/close-icon.svg') !important;
+}
+
+.zmdi-mail-send {
+  position: absolute;
+  right: 0px;
+  width: 40px;
+  height: 40px;
+  background-image: url('https://s3.amazonaws.com/koalachat/send-icon.svg') !important;
+  background-size: 25px 40px;
+  background-repeat: no-repeat;
 }
 
 .button, .button:visited, .button:active {
@@ -186,10 +198,6 @@ p.pointer-text{
 }
 
 /*Chatbox*/
-.zmdi-mail-send {
-  color: #0B61FF !important;
-}
-
 #chatSend{
   padding: 0px;
 }
@@ -340,7 +348,7 @@ p.pointer-text{
   color: #4A4A4A;
   border: none;
   outline: none;
-  background: #fafafa;
+  background: rgba(0,0,0,0);
   display: inline-block;
 }
 
@@ -353,7 +361,7 @@ p.pointer-text{
   width: 100%;
   display: inline-block;
   text-align: center;
-  background: #fafafa;
+  background: rgba(0,0,0,0);
   border-bottom: 1px solid #0B61FF; /*Koala Blue*/
 }
 
@@ -368,7 +376,7 @@ p.pointer-text{
 
 #fab_send {
   float: right;
-  background: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .fab_field .fab {
@@ -385,7 +393,7 @@ p.pointer-text{
   position: relative;
   background: none;
   margin: 6px 0 0 0;
-  max-height: 256px;
+  max-height: 400px;
   min-height: 0;
   font-size: 12px;
   line-height: 18px;
@@ -539,7 +547,12 @@ strong.chat_time {
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
   -webkit-transition: all 1s ease-in-out;
-  transition: all 1s ease-in-out;
+  transition: all 1.5s ease-in-out;
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  right: 50px;
+  bottom: 50px;
 }
 
 .is-float {
@@ -547,7 +560,7 @@ strong.chat_time {
 }
 
 .is-max {
-  box-shadow: inset 0 -12px 10px -10px rgba(0, 0, 0, 0.18), inset 0 12px 10px -10px rgba(0, 0, 0, 0.10);
+  box-shadow: inset 0 -12px 10px -10px rgba(0, 0, 0, 0.18);
 }
 
 .is-loading {
