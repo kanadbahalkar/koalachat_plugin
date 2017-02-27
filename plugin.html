@@ -1,30 +1,73 @@
-<!--todo-->
-<!--1. Get OID as a parameter-->
-<!--2. Isolate the iframe style and javascritpt from the host page-->
-<!--3. Fix the position of the chathead-->
-
 <html>
     <head>
         <link rel="stylesheet" href="https://s3.amazonaws.com/koalachat/chatStyle.css">
+        <link rel="stylesheet" href="https://s3.amazonaws.com/koalachat/emoji.css">
         <script type="text/javascript" src="https://s3.amazonaws.com/koalachat/jquery.min.js"></script>
+        <script type="text/javascript" src="https://s3.amazonaws.com/koalachat/socket.io.js"></script>
     </head>
     <body>
         <script type="text/javascript">
             $(function(){
-                //Get Owner ID
-                // var oid = window.parent.$("#koala-index").attr("u");
-
-                $.getScript("https://s3.amazonaws.com/koalachat/socket.io.js", function(){
-                    console.log("Socket.io Script loaded");
-                    //Write all socket io code here
-                });
                 
+                var oid = window.name;
+                var vid = null;
+                var newVisitor = false;
+                
+                //Set Width & Height of the iFrame
+                window.parent.document.getElementById('koala-plugin').width = '110px';
+                window.parent.document.getElementById('koala-plugin').height = '110px';
+
+                if (!localStorage.oid && typeof(Storage) !== "undefined")
+                    localStorage.setItem('oid', oid);
+                    
+                var socket = io.connect("https://localhost:4731/");
+                
+                socket.on('serve', function (data) {
+                    //check if visitor is new or old and
+                    //save user id in browser local storage
+                    if (typeof(Storage) !== "undefined") {
+                        if(!localStorage.getItem('vid')) {
+                            newVisitor = true;
+                        }
+                        else{
+                            vid = localStorage.getItem('vid');
+                            newVisitor = false;
+                        }
+                        socket.emit('return', { visitorID: vid, ownerID: oid, visitor: true, newVisitor: newVisitor, channel: 'Website' });
+                    } else {
+                        console.log('No Web Storage support! :`(');
+                    }
+
+                });
+
+                socket.on('new visitor', function (vid) {
+                    if (typeof(Storage) !== "undefined")
+                    localStorage.setItem('vid', vid);
+                });
+
+                socket.on('sent message', function(data){
+                    adminSend(data.message);
+                });
+
+                //If Anon messaging is allowed
                 $(`<div class="fabs">
                         <div class="chat white">
                             <div id="chat_converse" class="chat_converse"></div>
                             <div class="fab_field">
                                 <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
                                 <textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea>
+                            </div>
+                        </div>
+                        <a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a>
+                    </div>`).appendTo('body');
+
+                //If Anon messaging is Not Allowed
+                $(`<div class="fabs">
+                        <div class="chat white">
+                            <div id="chat_converse" class="chat_converse"></div>
+                            <div class="fab_field">
+                                <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
+                                <textarea id="chatSend" name="chat_message" placeholder="What's your email bud?" class="chat_field chat_message"></textarea>
                             </div>
                         </div>
                         <a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a>
@@ -37,6 +80,19 @@
                     toggleFab();
                 });
 
+                //Toggle heoght of the Chat iFrame
+                function toggleHeight() {
+                    if(window.parent.document.getElementById('koala-plugin').width == '110px'){
+                        console.log('110');
+                        window.parent.document.getElementById('koala-plugin').width = '400px';
+                        window.parent.document.getElementById('koala-plugin').height = '400px';
+                    }
+                    else{ 
+                        window.parent.document.getElementById('koala-plugin').width = '110px';
+                        window.parent.document.getElementById('koala-plugin').height = '110px';
+                    }
+                }
+
                 //Toggle chat and links
                 function toggleFab() {
                     $('.prime').toggleClass('zmdi-close');
@@ -45,6 +101,7 @@
                     $('#prime').toggleClass('is-float');
                     $('.chat').toggleClass('is-visible');
                     $('.fab').toggleClass('is-visible');
+                    toggleHeight();
                 }
 
                 //Increase Textarea on scroll height change
@@ -61,11 +118,22 @@
                     }
                     $('#chatSend').css('height', 40);
                     $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
+                    
+                    //Send the message from visitor to server
+                    socket.emit('send message', 
+                    {
+                        message: text, 
+                        from: localStorage.getItem('vid'), 
+                        to: localStorage.getItem('oid'),
+                        createdAt: Date.now(),
+                        channel: 'Website',
+                        live: true
+                    });
                 }
 
-                //Admin msg
+                //Admin msg UI
                 function adminSend(text) {
-                $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_admin">' + text + '</div>');
+                    $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_admin">' + text + '</div>');
                     if ($('.chat_converse').height() >= 400) {
                         $('.chat_converse').addClass('is-max');
                     }
