@@ -70,17 +70,30 @@
                 });
 
                 //Toggle heoght of the Chat iFrame
-                // function toggleHeight() {
-                //     if(window.parent.document.getElementById('koala-plugin').width == '110px'){
-                //         window.parent.document.getElementById('koala-plugin').width = '400px';
-                //         window.parent.document.getElementById('koala-plugin').height = '400px';
-                //     }
-                //     else{ 
-                //         window.parent.document.getElementById('koala-plugin').width = '110px';
-                //         window.parent.document.getElementById('koala-plugin').height = '110px';
-                //     }
-                // }
+                function toggleHeight() {
+                    if(window.parent.document.getElementById('koala-plugin').width == '110px'){
+                        window.parent.document.getElementById('koala-plugin').width = '400px';
+                        window.parent.document.getElementById('koala-plugin').height = '100vh';
+                    }
+                    else{ 
+                        window.parent.document.getElementById('koala-plugin').width = '110px';
+                        window.parent.document.getElementById('koala-plugin').height = '110px';
+                    }
+                }
 
+                //Ask for users email
+                socket.on('ask for email', function(flag){
+                    askForEmail(flag);
+                });
+                function askForEmail(flag){
+                    if(flag == true){
+                        $('#chatSend').attr("placeholder","Type in your email here...");
+                    }
+                    else {
+                        $('#chatSend').attr("placeholder","Pssst! Say something...");
+                    }
+                }
+                
                 //Toggle chat and links
                 function toggleFab() {
                     $('.prime').toggleClass('zmdi-close');
@@ -107,17 +120,42 @@
                     $('#chatSend').css('height', 40);
                     $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
                     
-                    //Send the message from visitor to server
-                    socket.emit('send message', 
-                    {
-                        message: text,
-                        sender: 'visitor',
-                        from: localStorage.getItem('vid'), 
-                        to: localStorage.getItem('oid'),
-                        createdAt: Date.now(),
-                        channel: 'Website',
-                        live: true
-                    });
+                    //Set emailFlag true if visitor needs to send email
+                    if($('#chatSend').attr("placeholder") == "Type in your email here..."){
+                        if(validateEmail(text)){
+                            //Send the message from visitor to server
+                            socket.emit('send message', 
+                            {
+                                message: text,
+                                sender: 'visitor',
+                                from: localStorage.getItem('vid'), 
+                                to: localStorage.getItem('oid'),
+                                createdAt: Date.now(),
+                                channel: 'Website',
+                                email: true,
+                                live: true
+                            });
+                        }
+                        else {
+                            var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
+                            adminSend(validationText);
+                        }
+                    }
+                    else{
+                        //Send the message from visitor to server
+                        socket.emit('send message', 
+                        {
+                            message: text,
+                            sender: 'visitor',
+                            from: localStorage.getItem('vid'), 
+                            to: localStorage.getItem('oid'),
+                            createdAt: Date.now(),
+                            channel: 'Website',
+                            email: false,
+                            live: true
+                        });
+                    }
+                    emailFlag = false;
                 }
 
                 //Admin msg UI
