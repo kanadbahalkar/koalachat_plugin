@@ -14,8 +14,8 @@
                 var newVisitor = false;
                 
                 //Set Width & Height of the iFrame
-                window.parent.document.getElementById('koala-plugin').width = '110px';
-                window.parent.document.getElementById('koala-plugin').height = '110px';
+                // window.parent.document.getElementById('koala-plugin').width = '110px';
+                // window.parent.document.getElementById('koala-plugin').height = '110px';
 
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
@@ -37,7 +37,6 @@
                     } else {
                         console.log('No Web Storage support! :`(');
                     }
-
                 });
 
                 socket.on('new visitor', function (vid) {
@@ -48,6 +47,8 @@
                 socket.on('sent message', function(data){
                     adminSend(data.message);
                 });
+
+                socket.emit('allow anon', { oid: oid });
 
                 //If Anon messaging is allowed
                 $(`<div class="fabs">
@@ -61,18 +62,6 @@
                         <a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a>
                     </div>`).appendTo('body');
 
-                //If Anon messaging is Not Allowed
-                $(`<div class="fabs">
-                        <div class="chat white">
-                            <div id="chat_converse" class="chat_converse"></div>
-                            <div class="fab_field">
-                                <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
-                                <textarea id="chatSend" name="chat_message" placeholder="What's your email bud?" class="chat_field chat_message"></textarea>
-                            </div>
-                        </div>
-                        <a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a>
-                    </div>`).appendTo('body');
-
                 toggleFab();
 
                 //Fab click
@@ -81,17 +70,16 @@
                 });
 
                 //Toggle heoght of the Chat iFrame
-                function toggleHeight() {
-                    if(window.parent.document.getElementById('koala-plugin').width == '110px'){
-                        console.log('110');
-                        window.parent.document.getElementById('koala-plugin').width = '400px';
-                        window.parent.document.getElementById('koala-plugin').height = '400px';
-                    }
-                    else{ 
-                        window.parent.document.getElementById('koala-plugin').width = '110px';
-                        window.parent.document.getElementById('koala-plugin').height = '110px';
-                    }
-                }
+                // function toggleHeight() {
+                //     if(window.parent.document.getElementById('koala-plugin').width == '110px'){
+                //         window.parent.document.getElementById('koala-plugin').width = '400px';
+                //         window.parent.document.getElementById('koala-plugin').height = '400px';
+                //     }
+                //     else{ 
+                //         window.parent.document.getElementById('koala-plugin').width = '110px';
+                //         window.parent.document.getElementById('koala-plugin').height = '110px';
+                //     }
+                // }
 
                 //Toggle chat and links
                 function toggleFab() {
@@ -101,7 +89,7 @@
                     $('#prime').toggleClass('is-float');
                     $('.chat').toggleClass('is-visible');
                     $('.fab').toggleClass('is-visible');
-                    toggleHeight();
+                    // toggleHeight();
                 }
 
                 //Increase Textarea on scroll height change
@@ -122,7 +110,8 @@
                     //Send the message from visitor to server
                     socket.emit('send message', 
                     {
-                        message: text, 
+                        message: text,
+                        sender: 'visitor',
                         from: localStorage.getItem('vid'), 
                         to: localStorage.getItem('oid'),
                         createdAt: Date.now(),
