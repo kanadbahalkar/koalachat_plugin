@@ -16,7 +16,7 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                var socket = io.connect("https://localhost:4731/");
+                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/");
 
                 socket.on('serve', function (data) {
                     //check if visitor is new or old and
