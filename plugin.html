@@ -13,15 +13,11 @@
                 var vid = null;
                 var newVisitor = false;
                 
-                //Set Width & Height of the iFrame
-                // window.parent.document.getElementById('koala-plugin').width = '110px';
-                // window.parent.document.getElementById('koala-plugin').height = '110px';
-
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
                 var socket = io.connect("https://localhost:4731/");
-                
+
                 socket.on('serve', function (data) {
                     //check if visitor is new or old and
                     //save user id in browser local storage
@@ -39,16 +35,17 @@
                     }
                 });
 
-                socket.on('new visitor', function (vid) {
-                    if (typeof(Storage) !== "undefined")
-                    localStorage.setItem('vid', vid);
+                socket.on('new visitor', function (vid, cid) {
+                    if (typeof(Storage) !== "undefined"){
+                        localStorage.setItem('vid', vid);
+                        localStorage.setItem('cid', cid);
+                    }
                 });
 
                 socket.on('sent message', function(data){
                     adminSend(data.message);
+                    window.parent.postMessage("notification","*");
                 });
-
-                socket.emit('allow anon', { oid: oid });
 
                 //If Anon messaging is allowed
                 $(`<div class="fabs">
@@ -62,24 +59,12 @@
                         <a id="prime" class="fab chathead-closed"><i class="prime zmdi"></i></a>
                     </div>`).appendTo('body');
 
-                toggleFab();
+                // toggleFab();
 
                 //Fab click
                 $("#prime").click(function() {
                     toggleFab();
                 });
-
-                //Toggle heoght of the Chat iFrame
-                function toggleHeight() {
-                    if(window.parent.document.getElementById('koala-plugin').width == '110px'){
-                        window.parent.document.getElementById('koala-plugin').width = '400px';
-                        window.parent.document.getElementById('koala-plugin').height = '100vh';
-                    }
-                    else{ 
-                        window.parent.document.getElementById('koala-plugin').width = '110px';
-                        window.parent.document.getElementById('koala-plugin').height = '110px';
-                    }
-                }
 
                 //Ask for users email
                 socket.on('ask for email', function(flag){
@@ -102,7 +87,7 @@
                     $('#prime').toggleClass('is-float');
                     $('.chat').toggleClass('is-visible');
                     $('.fab').toggleClass('is-visible');
-                    // toggleHeight();
+                    window.parent.postMessage("toggleHeight","*");
                 }
 
                 //Increase Textarea on scroll height change
@@ -130,6 +115,7 @@
                                 sender: 'visitor',
                                 from: localStorage.getItem('vid'), 
                                 to: localStorage.getItem('oid'),
+                                conversation: localStorage.getItem('cid'),
                                 createdAt: Date.now(),
                                 channel: 'Website',
                                 email: true,
@@ -139,6 +125,7 @@
                         else {
                             var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
                             adminSend(validationText);
+                            window.parent.postMessage("notification","*");
                         }
                     }
                     else{
@@ -149,6 +136,7 @@
                             sender: 'visitor',
                             from: localStorage.getItem('vid'), 
                             to: localStorage.getItem('oid'),
+                            conversation: localStorage.getItem('cid'),
                             createdAt: Date.now(),
                             channel: 'Website',
                             email: false,
