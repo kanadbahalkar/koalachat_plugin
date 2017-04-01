@@ -8,7 +8,7 @@ window.onload = function() {
   document.body.appendChild(iframe);
 
   //Notification Badge
-  var notifications = -1;
+  var notifications = 0;
   var badge = document.createElement('div');
   badge.style = 'width: 24px; height: 24px; background: #ff3333; border-radius: 12px; border: none; position: fixed; right: 35px; bottom: 85px; visibility: hidden; text-align: center; line-height: 24px !important; color: white; font: 14px "Helvetica Neue", sans-serif; z-index: 9123479813';
   badge.id = 'koala-notification-badge';
@@ -31,6 +31,7 @@ window.onload = function() {
           document.getElementById('koala-plugin').style.background = 'rgba(0,0,0,0)';
           if(notifications > 0){
             document.getElementById('koala-notification-badge').style.visibility = 'visible';
+            document.getElementById('koala-notification-badge').innerHTML = notifications;
           }
       }
       else{
@@ -42,8 +43,10 @@ window.onload = function() {
       }
     }
 
-    if(e.data == "notification"){
+    if(e.data == "notification" && document.getElementById('koala-plugin').style.width == '110px'){
       notifications += 1;
+      document.getElementById('koala-notification-badge').style.visibility = 'visible';
+      document.getElementById('koala-notification-badge').innerHTML = notifications;
     }
     
   },false);

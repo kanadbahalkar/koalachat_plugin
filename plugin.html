@@ -16,7 +16,8 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/");
+                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
+                // var socket = io.connect("https://localhost:4731/",{ secure: true });
 
                 socket.on('serve', function (data) {
                     //check if visitor is new or old and
@@ -44,7 +45,7 @@
 
                 socket.on('sent message', function(data){
                     adminSend(data.message);
-                    window.parent.postMessage("notification","*");
+                    window.parent.postMessage("notification","*"); //////////CHANGE THIS LATER /////////// 
                 });
 
                 //If Anon messaging is allowed
@@ -87,7 +88,7 @@
                     $('#prime').toggleClass('is-float');
                     $('.chat').toggleClass('is-visible');
                     $('.fab').toggleClass('is-visible');
-                    window.parent.postMessage("toggleHeight","*");
+                    window.parent.postMessage("toggleHeight","*"); //////////CHANGE THIS * LATER /////////// 
                 }
 
                 //Increase Textarea on scroll height change
@@ -125,7 +126,7 @@
                         else {
                             var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
                             adminSend(validationText);
-                            window.parent.postMessage("notification","*");
+                            window.parent.postMessage("notification" ,"*"); //////////CHANGE THIS LATER /////////// 
                         }
                     }
                     else{
