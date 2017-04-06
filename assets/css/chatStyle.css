@@ -233,9 +233,13 @@ p.pointer-text{
 }
 
 .chat.is-visible {
+  background: white;
+  padding-left: 20px;
+  border-radius: 20px;
   opacity: 1;
   -webkit-animation: zoomIn .2s cubic-bezier(.42, 0, .58, 1);
   animation: zoomIn .2s cubic-bezier(.42, 0, .58, 1);
+  box-shadow: 0 0 6px rgba(0, 0, 0, .16), 0 6px 12px rgba(0, 0, 0, .32);
 }
 
 .chat_option {
@@ -348,7 +352,7 @@ p.pointer-text{
   font-size: 16px;
   line-height: 40px;
   font-weight: 400;
-  color: #ccc;
+  color: #4A4A4A;
   border: none;
   outline: none;
   background: rgba(0,0,0,0);
@@ -369,7 +373,7 @@ p.pointer-text{
   display: inline-block;
   text-align: center;
   background: rgba(0,0,0,0);
-  border-bottom: 1px solid #0B61FF; /*Koala Blue*/
+  /*border-bottom: 1px solid #0B61FF;*/
 }
 
 .fab_field a {
@@ -397,11 +401,14 @@ p.pointer-text{
 }
 
 .chat_converse {
+  margin-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
   position: relative;
   background: none;
   margin: 6px 0 0 0;
-  max-height: 400px;
-  min-height: 0;
+  max-height: 100%;
+  height: 400px;
   font-size: 12px;
   line-height: 18px;
   overflow-y: auto;

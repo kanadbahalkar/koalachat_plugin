@@ -16,8 +16,8 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
-                // var socket = io.connect("https://localhost:4731/",{ secure: true });
+                // var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
+                var socket = io.connect("https://localhost:4731/",{ secure: true });
 
                 socket.on('serve', function (data) {
                     //check if visitor is new or old and
@@ -110,12 +110,14 @@
                     if($('#chatSend').attr("placeholder") == "Type in your email here..."){
                         if(validateEmail(text)){
                             //Send the message from visitor to server
+                            console.log(localStorage.getItem('userid'));
+                            
                             socket.emit('send message', 
                             {
                                 message: text,
                                 sender: 'visitor',
-                                from: localStorage.getItem('vid'), 
-                                to: localStorage.getItem('oid'),
+                                from: localStorage.getItem('userid') || localStorage.getItem('vid'), 
+                                to: oid || localStorage.getItem('oid'),
                                 conversation: localStorage.getItem('cid'),
                                 createdAt: Date.now(),
                                 channel: 'Website',
@@ -135,8 +137,8 @@
                         {
                             message: text,
                             sender: 'visitor',
-                            from: localStorage.getItem('vid'), 
-                            to: localStorage.getItem('oid'),
+                            from: localStorage.getItem('userid') || localStorage.getItem('vid'), 
+                            to: oid || localStorage.getItem('oid'),
                             conversation: localStorage.getItem('cid'),
                             createdAt: Date.now(),
                             channel: 'Website',

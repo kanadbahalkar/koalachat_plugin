@@ -28,7 +28,6 @@ window.onload = function() {
       if(document.getElementById('koala-plugin').style.width == '380px'){
           document.getElementById('koala-plugin').style.width = '110px';
           document.getElementById('koala-plugin').style.height = '110px';
-          document.getElementById('koala-plugin').style.background = 'rgba(0,0,0,0)';
           if(notifications > 0){
             document.getElementById('koala-notification-badge').style.visibility = 'visible';
             document.getElementById('koala-notification-badge').innerHTML = notifications;
@@ -37,7 +36,6 @@ window.onload = function() {
       else{
           document.getElementById('koala-plugin').style.width = '380px';
           document.getElementById('koala-plugin').style.height = '100%';
-          document.getElementById('koala-plugin').style.background = 'rgba(0,0,0,0.9)';
           document.getElementById('koala-notification-badge').style.visibility = 'hidden';
           notifications = 0;
       }
