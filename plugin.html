@@ -30,9 +30,9 @@
                             vid = localStorage.getItem('vid');
                             newVisitor = false;
                         }
-                        socket.emit('return', { visitorID: vid, ownerID: oid, visitor: true, newVisitor: newVisitor, channel: 'Website' });
+                        socket.emit('return', { visitorID: vid, ownerID: localStorage.getItem('oid'), visitor: true, newVisitor: newVisitor, channel: 'Website' });
                     } else {
-                        console.log('No Web Storage support! :`(');
+                        console.log('No Web Storage support!');
                     }
                 });
 
@@ -52,6 +52,9 @@
                 $(`<div class="fabs">
                         <div class="chat white">
                             <div id="chat_converse" class="chat_converse"></div>
+                            <div class="chat_converse_header">
+                                <div class="chat_converse_business_name">My Business Name</div>
+                            </div>
                             <div class="fab_field">
                                 <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
                                 <textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea>
@@ -100,7 +103,7 @@
                 function userSend(text) {
                     $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_user">' + text + '</div>');
                     $('#chatSend').val('');
-                    if ($('.chat_converse').height() >= 400) {
+                    if ($('.chat_converse').height() >= 500) {
                         $('.chat_converse').addClass('is-max');
                     }
                     $('#chatSend').css('height', 40);
@@ -110,13 +113,11 @@
                     if($('#chatSend').attr("placeholder") == "Type in your email here..."){
                         if(validateEmail(text)){
                             //Send the message from visitor to server
-                            console.log(localStorage.getItem('userid'));
-                            
                             socket.emit('send message', 
                             {
                                 message: text,
                                 sender: 'visitor',
-                                from: localStorage.getItem('userid') || localStorage.getItem('vid'), 
+                                from: localStorage.getItem('vid'), 
                                 to: oid || localStorage.getItem('oid'),
                                 conversation: localStorage.getItem('cid'),
                                 createdAt: Date.now(),
@@ -132,19 +133,36 @@
                         }
                     }
                     else{
-                        //Send the message from visitor to server
-                        socket.emit('send message', 
-                        {
-                            message: text,
-                            sender: 'visitor',
-                            from: localStorage.getItem('userid') || localStorage.getItem('vid'), 
-                            to: oid || localStorage.getItem('oid'),
-                            conversation: localStorage.getItem('cid'),
-                            createdAt: Date.now(),
-                            channel: 'Website',
-                            email: false,
-                            live: true
-                        });
+                        if(oid == '58d08da84409aa91be05190c'){
+                            //Send the message from Owner to Admin
+                            socket.emit('send message', 
+                            {
+                                message: text,
+                                sender: 'visitor',
+                                from: localStorage.getItem('oid'), //Owner is visitor in this case
+                                to: oid,
+                                conversation: localStorage.getItem('cid'),
+                                createdAt: Date.now(),
+                                channel: 'Website',
+                                email: false,
+                                live: true
+                            });
+                        }
+                        else {
+                            //Send the message from visitor to server
+                            socket.emit('send message', 
+                            {
+                                message: text,
+                                sender: 'visitor',
+                                from: localStorage.getItem('vid'), 
+                                to: oid || localStorage.getItem('oid'),
+                                conversation: localStorage.getItem('cid'),
+                                createdAt: Date.now(),
+                                channel: 'Website',
+                                email: false,
+                                live: true
+                            });
+                        }
                     }
                     emailFlag = false;
                 }
@@ -152,7 +170,7 @@
                 //Admin msg UI
                 function adminSend(text) {
                     $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_admin">' + text + '</div>');
-                    if ($('.chat_converse').height() >= 400) {
+                    if ($('.chat_converse').height() >= 500) {
                         $('.chat_converse').addClass('is-max');
                     }
                     $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
