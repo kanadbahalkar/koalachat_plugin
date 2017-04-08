@@ -10,6 +10,7 @@
             $(function(){
                 
                 var oid = window.name;
+                var bn = window.bn;
                 var vid = null;
                 var newVisitor = false;
                 
@@ -53,7 +54,7 @@
                         <div class="chat white">
                             <div id="chat_converse" class="chat_converse"></div>
                             <div class="chat_converse_header">
-                                <div class="chat_converse_business_name">My Business Name</div>
+                                <div class="chat_converse_business_name">`+bn+`</div>
                             </div>
                             <div class="fab_field">
                                 <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>

@@ -4,6 +4,7 @@ window.onload = function() {
   iframe.style = 'width: 110px; height: 110px; max-height: 700px; border: none; position: fixed; right: 0; bottom: 0; z-index: 9123479812';
   iframe.src = 'https://s3.amazonaws.com/koalachat/plugin.html';
   iframe.name = window.parent.document.getElementById('koala-index').getAttribute('u'); 
+  iframe.bn = window.parent.document.getElementById('koala-index').getAttribute('bn'); 
   iframe.id = 'koala-plugin';
   document.body.appendChild(iframe);
 
