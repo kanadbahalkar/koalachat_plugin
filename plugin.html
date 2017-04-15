@@ -9,8 +9,7 @@
         <script type="text/javascript">
             $(function(){
                 
-                var oid = window.name;
-                var bn = window.bn;
+                var oid = window.name; 
                 var vid = null;
                 var newVisitor = false;
                 
@@ -20,6 +19,14 @@
                 // var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
                 var socket = io.connect("https://localhost:4731/",{ secure: true });
 
+                //Get Owner's business name
+                if(!localStorage.getItem('businessName')){
+                    socket.emit('get my business name', oid);
+                    socket.on('business name', function(data){
+                        localStorage.setItem('businessName', data);
+                    });
+                }
+                
                 socket.on('serve', function (data) {
                     //check if visitor is new or old and
                     //save user id in browser local storage
@@ -54,7 +61,7 @@
                         <div class="chat white">
                             <div id="chat_converse" class="chat_converse"></div>
                             <div class="chat_converse_header">
-                                <div class="chat_converse_business_name">`+bn+`</div>
+                                <div class="chat_converse_business_name">`+localStorage.getItem('businessName')+`</div>
                             </div>
                             <div class="fab_field">
                                 <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
@@ -134,17 +141,17 @@
                         }
                     }
                     else{
-                        if(oid == '58d08da84409aa91be05190c'){
+                        if(oid.split('|')[1] == '58d08da84409aa91be05190c'){
                             //Send the message from Owner to Admin
                             socket.emit('send message', 
                             {
                                 message: text,
-                                sender: 'visitor',
-                                from: localStorage.getItem('oid'), //Owner is visitor in this case
-                                to: oid,
-                                conversation: localStorage.getItem('cid'),
+                                sender: 'Owner',
+                                from: oid.split('|')[0], //Owner is visitor in this case
+                                to: oid.split('|')[1],
+                                conversation: oid.split('|')[2],
                                 createdAt: Date.now(),
-                                channel: 'Website',
+                                channel: 'Dashboard',
                                 email: false,
                                 live: true
                             });
