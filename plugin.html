@@ -127,62 +127,72 @@
                     $('#chatSend').css('height', 24);
                     $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
                     
-                    //Set emailFlag true if visitor needs to send email
-                    if($('#chatSend').attr("placeholder") == "Type in your email here..."){
-                        if(validateEmail(text)){
-                            //Send the message from visitor to server
-                            socket.emit('send message', 
-                            {
-                                message: text,
-                                sender: 'visitor',
-                                from: localStorage.getItem('vid'), 
-                                to: oid || localStorage.getItem('oid'),
-                                conversation: localStorage.getItem('cid'),
-                                createdAt: Date.now(),
-                                channel: 'Website',
-                                email: true,
-                                live: true
-                            });
+                    //Show bubbles animation
+                    setTimeout(function(){ 
+                        $('#chat_converse').append('<div class="bubble-chat"><div class="container-circle"><div class="circle" id="circle1"></div><div class="circle" id="circle2"></div><div class="circle" id="circle3"></div></div></div>');
+                    }, Math.floor(Math.random()*(100) + 400));
+
+                    setTimeout(function(){ 
+                        //Remove bubbles animation
+                        $('.bubble-chat').remove();
+
+                        //Set emailFlag true if visitor needs to send email
+                        if($('#chatSend').attr("placeholder") == "Type in your email here..."){
+                            if(validateEmail(text)){
+                                //Send the message from visitor to server
+                                socket.emit('send message', 
+                                {
+                                    message: text,
+                                    sender: 'visitor',
+                                    from: localStorage.getItem('vid'), 
+                                    to: oid || localStorage.getItem('oid'),
+                                    conversation: localStorage.getItem('cid'),
+                                    createdAt: Date.now(),
+                                    channel: 'Website',
+                                    email: true,
+                                    live: true
+                                });
+                            }
+                            else {
+                                var validationText = 'Derp! Seems like this email id is not valid. Let`s try again…';
+                                adminSend(validationText);
+                                window.parent.postMessage("notification", parentSite);
+                            }
                         }
-                        else {
-                            var validationText = 'Derp! Seems like this email id is not valid. Let`s try again…';
-                            adminSend(validationText);
-                            window.parent.postMessage("notification", parentSite);
+                        else{
+                            if(oid.split('|')[1] == '58d08da84409aa91be05190c'){
+                                //Send the message from Owner to Admin
+                                socket.emit('send message', 
+                                {
+                                    message: text,
+                                    sender: 'Owner',
+                                    from: oid.split('|')[0], //Owner is visitor in this case
+                                    to: oid.split('|')[1],
+                                    conversation: oid.split('|')[2],
+                                    createdAt: Date.now(),
+                                    channel: 'Dashboard',
+                                    email: false,
+                                    live: true
+                                });
+                            }
+                            else {
+                                //Send the message from visitor to server
+                                socket.emit('send message', 
+                                {
+                                    message: text,
+                                    sender: 'visitor',
+                                    from: localStorage.getItem('vid'), 
+                                    to: oid || localStorage.getItem('oid'),
+                                    conversation: localStorage.getItem('cid'),
+                                    createdAt: Date.now(),
+                                    channel: 'Website',
+                                    email: false,
+                                    live: true
+                                });
+                            }
                         }
-                    }
-                    else{
-                        if(oid.split('|')[1] == '58d08da84409aa91be05190c'){
-                            //Send the message from Owner to Admin
-                            socket.emit('send message', 
-                            {
-                                message: text,
-                                sender: 'Owner',
-                                from: oid.split('|')[0], //Owner is visitor in this case
-                                to: oid.split('|')[1],
-                                conversation: oid.split('|')[2],
-                                createdAt: Date.now(),
-                                channel: 'Dashboard',
-                                email: false,
-                                live: true
-                            });
-                        }
-                        else {
-                            //Send the message from visitor to server
-                            socket.emit('send message', 
-                            {
-                                message: text,
-                                sender: 'visitor',
-                                from: localStorage.getItem('vid'), 
-                                to: oid || localStorage.getItem('oid'),
-                                conversation: localStorage.getItem('cid'),
-                                createdAt: Date.now(),
-                                channel: 'Website',
-                                email: false,
-                                live: true
-                            });
-                        }
-                    }
-                    emailFlag = false;
+                        emailFlag = false;
+                    }, Math.floor(Math.random()*(1500)+1500));
                 }
 
                 //Admin msg UI
