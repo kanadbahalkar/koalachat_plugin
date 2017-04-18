@@ -21,10 +21,14 @@
                 // var socket = io.connect("https://localhost:4731/",{ secure: true });
 
                 //Get Owner's business name
-                if(!localStorage.getItem('businessName')){
-                    socket.emit('get my business name', oid);
+                if(!localStorage.getItem('businessName') || !localStorage.getItem('allowAnon')){
+                    socket.emit('get business preferences', oid);
                     socket.on('business name', function(data){
                         localStorage.setItem('businessName', data);
+                    });
+                    socket.on('allow anonymous', function(data){
+                        localStorage.setItem('allowAnon', data);
+                        askForEmail(data);
                     });
                 }
                 
@@ -80,11 +84,8 @@
                 });
 
                 //Ask for users email
-                socket.on('ask for email', function(flag){
-                    askForEmail(flag);
-                });
                 function askForEmail(flag){
-                    if(flag == true){
+                    if(flag == false){
                         $('#chatSend').attr("placeholder","Type in your email here...");
                     }
                     else {
