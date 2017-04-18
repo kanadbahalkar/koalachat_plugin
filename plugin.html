@@ -12,12 +12,13 @@
                 var oid = window.name; 
                 var vid = null;
                 var newVisitor = false;
-                
+                var parentSite = (window.location != window.parent.location) ? document.referrer : document.location.href;
+
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                // var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
-                var socket = io.connect("https://localhost:4731/",{ secure: true });
+                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
+                // var socket = io.connect("https://localhost:4731/",{ secure: true });
 
                 //Get Owner's business name
                 if(!localStorage.getItem('businessName')){
@@ -53,16 +54,16 @@
 
                 socket.on('sent message', function(data){
                     adminSend(data.message);
-                    window.parent.postMessage("notification","*"); //////////CHANGE THIS LATER /////////// 
+                    window.parent.postMessage("notification", parentSite); 
                 });
 
                 //If Anon messaging is allowed
                 $(`<div class="fabs">
                         <div class="chat white">
-                            <div id="chat_converse" class="chat_converse"></div>
                             <div class="chat_converse_header">
                                 <div class="chat_converse_business_name">`+localStorage.getItem('businessName')+`</div>
                             </div>
+                            <div id="chat_converse" class="chat_converse"></div>
                             <div class="fab_field">
                                 <a id="fab_send" class="fab"><i class="zmdi zmdi-mail-send"></i></a>
                                 <textarea id="chatSend" name="chat_message" placeholder="Pssst! Say something..." class="chat_field chat_message"></textarea>
@@ -99,7 +100,7 @@
                     $('#prime').toggleClass('is-float');
                     $('.chat').toggleClass('is-visible');
                     $('.fab').toggleClass('is-visible');
-                    window.parent.postMessage("toggleHeight","*"); //////////CHANGE THIS * LATER /////////// 
+                    window.parent.postMessage("toggleHeight", parentSite);
                 }
 
                 //Increase Textarea on scroll height change
@@ -107,6 +108,15 @@
                     $(this).css('height', this.scrollHeight);
                 });
 
+                //Decrease messages height if textarea is multiline
+                $('.chat_converse').css("height", 500 - $('.fab_field').height());
+                $("#chatSend").keyup(function(event) {
+                    if ($(this).val().split("\n")) {
+                        $('.chat_converse').css("height", 500 - $('.fab_field').height());
+                        event.preventDefault();
+                    } 
+                });
+                
                 //User msg
                 function userSend(text) {
                     $('#chat_converse').append('<div class="chat_msg_item chat_msg_item_user">' + text + '</div>');
@@ -114,7 +124,7 @@
                     if ($('.chat_converse').height() >= 500) {
                         $('.chat_converse').addClass('is-max');
                     }
-                    $('#chatSend').css('height', 40);
+                    $('#chatSend').css('height', 24);
                     $('.chat_converse').scrollTop($('.chat_converse')[0].scrollHeight);
                     
                     //Set emailFlag true if visitor needs to send email
@@ -135,9 +145,9 @@
                             });
                         }
                         else {
-                            var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
+                            var validationText = 'Derp! Seems like this email id is not valid. Let`s try again…';
                             adminSend(validationText);
-                            window.parent.postMessage("notification" ,"*"); //////////CHANGE THIS LATER /////////// 
+                            window.parent.postMessage("notification", parentSite);
                         }
                     }
                     else{
@@ -319,12 +329,12 @@
                         }
                         else if(!validateEmail(email)){
                             $('.chat_login_alert').remove();
-                            var validationText = 'Derp! Seems like this email id is not valid. Let’s try again… 😊';
+                            var validationText = 'Derp! Seems like this email id is not valid. Let`s try again…';
                             $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
                         } 
                         else if(!validatePassword(password)){
                             $('.chat_login_alert').remove();
-                            var validationText = 'Derp! Seems like your password is a little too short. Let’s make it longer shall we… 😊';
+                            var validationText = 'Derp! Seems like your password is a little too short. Let`s make it longer shall we…';
                             $('.chat_login').prepend('<div class="chat_login_alert">' + validationText +  '</div>');
                         }
                         }

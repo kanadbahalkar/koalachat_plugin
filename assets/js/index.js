@@ -30,7 +30,7 @@ window.onload = function() {
 
   // Listen to message from child window
   eventer(messageEvent,function(e) {
-    if(e.data == 'toggleHeight'){
+    if(e.data == "toggleHeight" && e.origin == "https://s3.amazonaws.com"){
       //Toggle height of the Chat iFrame
       if(document.getElementById('koala-plugin').style.width == '380px'){
           document.getElementById('koala-plugin').style.width = '110px';
@@ -48,7 +48,7 @@ window.onload = function() {
       }
     }
 
-    if(e.data == "notification" && document.getElementById('koala-plugin').style.width == '110px'){
+    if(e.data == "notification" && document.getElementById('koala-plugin').style.width == '110px' && e.origin == "https://s3.amazonaws.com"){
       notifications += 1;
       document.getElementById('koala-notification-badge').style.visibility = 'visible';
       document.getElementById('koala-notification-badge').innerHTML = notifications;
