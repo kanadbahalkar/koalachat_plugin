@@ -17,21 +17,28 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
-                // var socket = io.connect("https://localhost:4731/",{ secure: true });
+                // var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
+                var socket = io.connect("https://localhost:4731/",{ secure: true });
 
-                //Get Owner's business name
-                if(!localStorage.getItem('businessName') || !localStorage.getItem('allowAnon')){
+                //Get Owner's business preferences
+                // if(!localStorage.getItem('businessName') || !localStorage.getItem('allowAnon') || !localStorage.getItem('enableDisable')){
                     socket.emit('get business preferences', oid);
                     socket.on('business name', function(data){
                         localStorage.setItem('businessName', data);
                     });
+
                     socket.on('allow anonymous', function(data){
                         localStorage.setItem('allowAnon', data);
                         askForEmail(data);
                     });
-                }
-                
+                    
+                    socket.on('enable disable', function(data){
+                        localStorage.setItem('enableDisable', data);
+                        if(data == true) window.parent.postMessage("enable", parentSite); 
+                        else window.parent.postMessage("disable", parentSite)
+                    });
+                // }
+
                 socket.on('serve', function (data) {
                     //check if visitor is new or old and
                     //save user id in browser local storage
