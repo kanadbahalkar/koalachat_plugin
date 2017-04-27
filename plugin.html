@@ -17,8 +17,14 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                // var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
-                var socket = io.connect("https://localhost:4731/",{ secure: true });
+                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
+                // var socket = io.connect("https://localhost:4731/",{ secure: true });
+
+                socket.emit('visitor is live', {
+                    visitor: vid || localStorage.getItem('vid'), 
+                    owner: oid || localStorage.getItem('oid'),
+                    live: true
+                });
 
                 //Get Owner's business preferences
                 // if(!localStorage.getItem('businessName') || !localStorage.getItem('allowAnon') || !localStorage.getItem('enableDisable')){
@@ -67,7 +73,7 @@
                     adminSend(data.message);
                     window.parent.postMessage("notification", parentSite); 
                 });
-
+                
                 //If Anon messaging is allowed
                 $(`<div class="fabs">
                         <div class="chat white">

@@ -14,6 +14,9 @@ window.onload = function() {
   iframe.id = 'koala-plugin';
   document.body.appendChild(iframe);
 
+  //Show iframe thumbnail
+  document.getElementById('koala-plugin').style.display = 'initial';
+
   //Notification Badge
   var notifications = 0;
   var badge = document.createElement('div');
@@ -21,7 +24,6 @@ window.onload = function() {
   badge.id = 'koala-notification-badge';
   badge.innerHTML = notifications;
   document.body.appendChild(badge);
-
 
   // Create IE + others compatible event handler
   var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";

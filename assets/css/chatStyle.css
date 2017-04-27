@@ -1,5 +1,5 @@
 body {
-    background-color: rgba(0,0,0,0);;
+    background-color: rgba(0,0,0,0);
     font-family: 'Hind', sans-serif;
     font-weight: 400;
     font-size: 14px;
@@ -203,7 +203,7 @@ p.pointer-text{
 /*Chatbox*/
 #chatSend{
   float: left;
-  padding: 0 0 0 20px;;
+  padding: 0 0 0 20px;
 }
 
 .chat {
@@ -737,7 +737,7 @@ strong.chat_time {
   position: relative;
   display: block;
   clear: both;
-  margin: 20px 0px 20px 20px;
+  margin: 20px 0px 20px 30px;
 }
 
 .container-circle {
