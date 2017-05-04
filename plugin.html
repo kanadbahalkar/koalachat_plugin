@@ -9,7 +9,7 @@
         <script type="text/javascript">
             $(function(){
                 
-                var oid = window.name; 
+                var oid = window.name.split('|')[1];
                 var vid = null;
                 var newVisitor = false;
                 var parentSite = (window.location != window.parent.location) ? document.referrer : document.location.href;
@@ -17,7 +17,7 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                var socket = io.connect("https://ec2-54-186-217-17.us-west-2.compute.amazonaws.com:4731/",{ secure: true });
+                var socket = io.connect("https://staging.koalachat.com/",{ secure: true });
                 // var socket = io.connect("https://localhost:4731/",{ secure: true });
 
                 socket.emit('visitor is live', {
@@ -174,15 +174,15 @@
                             }
                         }
                         else{
-                            if(oid.split('|')[1] == '58d08da84409aa91be05190c'){
+                            if(oid == '58d08da84409aa91be05190c'){
                                 //Send the message from Owner to Admin
                                 socket.emit('send message', 
                                 {
                                     message: text,
                                     sender: 'Owner',
-                                    from: oid.split('|')[0], //Owner is visitor in this case
-                                    to: oid.split('|')[1],
-                                    conversation: oid.split('|')[2],
+                                    from: window.name.split('|')[0], //Owner is visitor in this case
+                                    to: oid, 
+                                    conversation: window.name.split('|')[2],
                                     createdAt: Date.now(),
                                     channel: 'Dashboard',
                                     email: false,
