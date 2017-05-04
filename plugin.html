@@ -9,7 +9,7 @@
         <script type="text/javascript">
             $(function(){
                 
-                var oid = window.name.split('|')[1];
+                var oid = window.name.split('|')[1] || window.name;
                 var vid = null;
                 var newVisitor = false;
                 var parentSite = (window.location != window.parent.location) ? document.referrer : document.location.href;
