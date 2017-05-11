@@ -17,8 +17,8 @@
                 if (!localStorage.oid && typeof(Storage) !== "undefined")
                     localStorage.setItem('oid', oid);
                     
-                var socket = io.connect("https://staging.koalachat.com/",{ secure: true });
-                // var socket = io.connect("https://localhost:4731/",{ secure: true });
+                // var socket = io.connect("https://staging.koalachat.com/",{ secure: true });
+                var socket = io.connect("https://localhost:4731/",{ secure: true });
 
                 socket.emit('visitor is live', {
                     visitor: vid || localStorage.getItem('vid'), 
@@ -31,6 +31,10 @@
                     socket.emit('get business preferences', oid);
                     socket.on('business name', function(data){
                         localStorage.setItem('businessName', data);
+                    });
+
+                    socket.on('ask for email', function(data){
+                        askForEmail(data);
                     });
 
                     socket.on('allow anonymous', function(data){

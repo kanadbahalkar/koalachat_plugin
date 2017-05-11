@@ -1,8 +1,10 @@
 window.onload = function() {
   //Create iframe for chat
   var iframe = document.createElement('iframe');
-  iframe.style = 'width: 110px; height: 110px; max-height: 700px; border: none; position: fixed; right: 0; bottom: 0; z-index: 9123479812; display: none;';
-  iframe.src = 'https://s3.amazonaws.com/koalachat/plugin.html';
+  iframe.setAttribute("style", "width: 110px; height: 110px; max-height: 700px; border: none; position: fixed; right: 0; bottom: 0; z-index: 9123479812; display: none;");
+  // iframe.style = 'width: 110px; height: 110px; max-height: 700px; border: none; position: fixed; right: 0; bottom: 0; z-index: 9123479812; display: none;';
+  iframe.setAttribute("src", "https://s3.amazonaws.com/koalachat/plugin.html");
+  // iframe.src = 'https://s3.amazonaws.com/koalachat/plugin.html';
   if(window.parent.document.getElementById('koala-index').getAttribute('a')) {
     iframe.name = window.parent.document.getElementById('koala-index').getAttribute('u') + '|'
                 + window.parent.document.getElementById('koala-index').getAttribute('a') + '|' 
